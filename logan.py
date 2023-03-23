@@ -2,6 +2,7 @@ import numpy as np
 import wavio
 from matplotlib import pyplot as plt 
 import math
+import random
 
 
 # # have user enter in some ascii text
@@ -28,20 +29,44 @@ def make_piano_wave(base_freq, rate, time_cap):
     
     return np.array(wave_values)
 
-sin_a = np.sin(2*np.pi * afreq * t)
-sin_g = np.sin(2*np.pi * gfreq * t)
-piano_440 = make_piano_wave(800, rate, 1)
+def sine(base_freq, rate, time_cap):
+    # def calc_val(curr_time):
+        # return math.sin(2 * math.pi * time)
 
-combined = np.concatenate((sin_a[0:rate], sin_g[0:rate]))
+    wave_values = []
+    # calc_val = lambda t : math.sin(2 * math.pi * t * base_freq)
+    calc_val = lambda t : math.sin(((2*math.pi)/rate) * t * base_freq)
+
+    for time in range(time_cap*rate):
+        wave_values.append(calc_val(time))
+    
+    return np.array(wave_values)
+
+def random_int(rate, amplitude, time_cap):
+    wave_values = []
+
+    for time in range(time_cap * rate):
+        wave_values.append(random.randint(-1, 1) * amplitude)
+    
+    return np.array(wave_values)
+
+sin_a = np.sin(2*np.pi * afreq * t)
+# sin_g = np.sin(2*np.pi * gfreq * t)
+sin_a2 = sine(afreq, rate, 1)
+piano_440 = make_piano_wave(800, rate, 1)
+random_ints = random_int(rate, 1, 1)
+
+# combined = np.concatenate((sin_a[0:rate], sin_g[0:rate]))
 
 # for value in combined:
 #     print(value)
 
-plt.title("Matplotlib demo") 
+plt.title("Sound - graphed!")
 plt.xlabel("x axis caption") 
 plt.ylabel("y axis caption") 
-plt.plot(sin_a[:200])
-plt.plot(sin_g[:200])
+# plt.plot(sin_a[:200])
+plt.plot(sin_a2)
+plt.plot(random_ints)
 plt.show()
 
-# wavio.write("sine24.wav", combined, rate, sampwidth=3)
+wavio.write("sine24.wav", random_ints, rate, sampwidth=3)
