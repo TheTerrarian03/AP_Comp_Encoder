@@ -1,3 +1,7 @@
+import library
+
+def get_user_message():
+
 def binary_conversion(message):
     ascii_values = [] # List for ascii values
     binary_values = [] # List for final binary message
@@ -9,5 +13,10 @@ def binary_conversion(message):
         binary_values.append(bin(value)[2:])
 
     return binary_values 
+
+# Syncs binary to sound
+def sync_message(binary_values):
+    for binary_values in library.notes_and_letters
+
 
 print(binary_conversion('hello'))
