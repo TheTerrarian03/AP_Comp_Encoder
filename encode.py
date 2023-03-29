@@ -64,7 +64,7 @@ def cap_at_1(np_array: np.array):
     
     return np.array(capped_array)
 
-def make_waves(frequencies: list, sample_rate: int, note_time: float, decay: float=0, show_graph: bool=True) -> np.array:
+def make_waves(frequencies: list, sample_rate: int, note_time: float, decay: float=0, show_graph: bool=False) -> np.array:
     """
     Takes in a list of frequencies for notes, and converts them to a (very large) array of data, representing sound waves
     
@@ -84,10 +84,22 @@ def make_waves(frequencies: list, sample_rate: int, note_time: float, decay: flo
 
     print(total_list)
     scaled_array = scale_to_1(total_list)
+
+    if(show_graph):
+        plt.title("Sound - graphed!")
+        plt.xlabel("x axis - time") 
+        plt.ylabel("y axis - amplitude") 
+        # plt.plot(sin_a[:200])
+        plt.plot(scaled_array)
+        plt.show()
+
     return scaled_array
 
 
 if __name__ == "__main__":
-    wave_data = make_waves([261.6, 293.7, 329.6, 349.2, 392, 349.2, 329.6, 293.7, 261.6], 44100, 0.25)
+    frequencies = [random.randrange(98, 650) for x in range(100)]
+    print(frequencies)
+    # wave_data = make_waves([261.6, 293.7, 329.6, 349.2, 392, 349.2, 329.6, 293.7, 261.6], 44100, 0.25, decay=1)
+    wave_data = make_waves(frequencies, 44100, 0.025, decay=0.025)
     # wavio.write("bug.wav", wave_data, 44100, sampwidth=3)
     write_file("bug.wav", wave_data)
