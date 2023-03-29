@@ -1,6 +1,7 @@
-import library
+import library, tkinter as tk
 
 def get_user_message():
+    
 
 def binary_conversion(message):
     ascii_values = [] # List for ascii values
@@ -14,9 +15,10 @@ def binary_conversion(message):
 
     return binary_values 
 
+'''
 # Syncs binary to sound
 def sync_message(binary_values):
     for binary_values in library.notes_and_letters
-
+'''
 
 print(binary_conversion('hello'))
