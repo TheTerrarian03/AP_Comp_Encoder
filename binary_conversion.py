@@ -10,4 +10,4 @@ def binary_conversion(message):
 
     return binary_values 
 
-print(binary_conversion('Hello'))
+print(binary_conversion('hello'))
