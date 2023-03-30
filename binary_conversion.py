@@ -14,18 +14,21 @@ def binary_conversion(message):
 
 # Syncs binary to sound
 def sync_message(message):
-    binary_inds = []
+    all_notes = [] # Each individual letters notes to sort throut
+    binary_inds = [] # Indexes of the letters in notes_and_letters
 
-    for notes in library.notes_and_letters:
+    # Finds index of the binary for the note
+    for notes in library.notes_and_letters: # Checks each individual list for a note
         for values in library.notes_and_letters[notes]:
-            print(values)
-            if values in message:
-                print('woohoo') 
-                print('value:',values,'notes:',notes)
-                #binary_inds.append()
-                print(library.notes_and_letters[notes.index(values)])
+            if values in message: # Checks if the value matches in the message
+                all_notes.append(notes)
+                binary_inds.append(library.notes_and_letters[notes].index(values)) # Finds index of value and adds to list
             else:
-                print('no')
+                print('!')
+
+# Function for button press
+def button_ui():
+    return sync_message(binary_conversion(msg))
 
 # Creates UI for inputing a message
 msg_window = tk.Tk() # Creates a window
@@ -39,7 +42,7 @@ msg_box = tk.Entry(msg_window, textvariable=msg)
 msg_box.grid(column=6, row=8, sticky='news')
 
 # Enter button
-enter = tk.Button(msg_window, text='Enter Message', command= sync_message(binary_conversion(msg)))
+enter = tk.Button(msg_window, text='Enter Message', command= button_ui)
 enter.grid(column=6, row=7, sticky='news')
 
 msg_window.mainloop()
