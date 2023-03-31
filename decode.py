@@ -27,6 +27,58 @@ def read_file_get_rate(file_name: str):
     file_data = wavio.read(file_name)
     return file_data.rate
 
+def determine_note_length(sound_data: np.array, sample_rate: float):
+    TRACK = 0
+    song_len = len(sound_data) / sample_rate
+
+    # get_val = lambda i : sound_data[i][TRACK]
+    
+    # frequencies = []
+    # frequencies_to_average = []
+    # samples_per_period = 0
+
+    # for i in range(1, len(sound_data)):
+    #     # if wave goes above 0, cycle completed
+    #     if get_val(i-1) < 0 and get_val(i) >= 0:
+    #         # is samples number more than 0?
+    #         if (sample_rate > 0):
+    #             # calculate frequency
+    #             time_period = samples_per_period / sample_rate
+    #             frequency = 1 / time_period
+
+    #             # add to list
+    #             if (len(frequencies) > 0):
+    #                 if (frequencies[-1] != frequency):
+    #                     frequencies_to_average.append(frequency)
+    #             else:
+    #                 frequencies_to_average.append(frequency)
+            
+    #         samples_per_period = 0
+
+    #     samples_per_period += 1
+        
+    #     if (len(frequencies_to_average) > 10):
+    #         avg_frequency = sum(frequencies_to_average) / len(frequencies_to_average)
+    #         frequencies.append(avg_frequency)
+    #         frequencies_to_average = []
+
+    #     print(frequencies)
+
+def closest_num(num, num_list):
+    """
+    Given a number and a list of numbers, returns the number from the list
+    that is closest to the given number.
+    """
+    closest = None
+    diff = float('inf')  # Initialize with a very large number
+    
+    for n in num_list:
+        if abs(num - n) < diff:
+            diff = abs(num - n)
+            closest = n
+    
+    return closest
+
 def parse_for_frequencies(sound_data: np.array, sample_rate: float):
     TRACK = 0
 
@@ -35,34 +87,51 @@ def parse_for_frequencies(sound_data: np.array, sample_rate: float):
     frequencies = []
     frequencies_to_average = []
     samples_per_period = 0
+    tracking_samples = False
 
     for i in range(1, len(sound_data)):
-        # if wave goes above 0, cycle completed
+        # if wave goes above 0, cycle completed or started
         if get_val(i-1) < 0 and get_val(i) >= 0:
-            # is samples number more than 0?
-            if (sample_rate > 0):
+            # if we're not alread y tracking, start tracking and set samples to 0 based on current value
+            if (not tracking_samples):
+                tracking_samples = True
+                samples_per_period = 0
+
+            # tracking samples, calculate frequency and restart
+            else:
                 # calculate frequency
                 time_period = samples_per_period / sample_rate
                 frequency = 1 / time_period
 
+                closest_frequency = closest_num(frequency)
+                print(closest_num)
                 # add to list
                 if (len(frequencies) > 0):
-                    if (frequencies[-1] != frequency):
-                        frequencies_to_average.append(frequency)
+                    if (frequencies[-1] != closest_frequency):
+                        frequencies.append((closest_frequency))
                 else:
-                    frequencies_to_average.append(frequency)
+                    frequencies.append(closest_frequency)
+                
+                # reset tracking
+                samples_per_period = 0
+                tracking_samples = False
+
+                print("tracking samples, calculating")
             
-            samples_per_period = 0
-
-        samples_per_period += 1
+        if (tracking_samples):
+            samples_per_period += 1
         
-        if (len(frequencies_to_average) > 10):
-            avg_frequency = sum(frequencies_to_average) / len(frequencies_to_average)
-            frequencies.append(avg_frequency)
-            frequencies_to_average = []
+        #     samples_per_period = 1
 
-        print(frequencies)
-    
+        # if (samples_per_period > 0):
+        #     samples_per_period += 1
+        
+        # if (len(frequencies_to_average) > 5):
+        #     avg_frequency = sum(frequencies_to_average) / len(frequencies_to_average)
+        #     frequencies.append(avg_frequency)
+        #     frequencies_to_average = []
+
+        print(frequencies, samples_per_period, tracking_samples)
         
         # # check if values passed 0
         # if (last_val1 > 0) and (val < 0):
@@ -100,6 +169,7 @@ def parse_for_frequencies(sound_data: np.array, sample_rate: float):
         # last_val2 = val
 
         # print(frequencies)
+        return frequencies
 
 
 if __name__ == "__main__":
@@ -107,4 +177,4 @@ if __name__ == "__main__":
     sample_rate = read_file_get_rate("test.wav")
     
     parse_for_frequencies(sound_data, sample_rate)
-    
+    determine_note_length(sound_data, sample_rate)

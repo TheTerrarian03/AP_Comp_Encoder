@@ -102,6 +102,6 @@ if __name__ == "__main__":
     # print(frequencies)
     # wave_data = make_waves([261.6, 293.7, 329.6, 349.2, 392, 349.2, 329.6, 293.7, 261.6], 44100, 0.25, decay=1)
     # wave_data = make_waves(frequencies, 44100, 0.025, decay=0.025)
-    wave_data = make_waves([440, 220, 110], SAMPLE_RATE, 0.1, show_graph=False)
+    wave_data = make_waves([440, 220, 110], SAMPLE_RATE, 0.125, show_graph=False)
     # wavio.write("bug.wav", wave_data, 44100, sampwidth=3)
     write_file("test.wav", wave_data, SAMPLE_RATE, sample_width=3)
