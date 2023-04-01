@@ -79,7 +79,7 @@ def make_waves(frequencies: list, sample_rate: int, note_time: float, decay: flo
     total_list = []
 
     for note_freq in frequencies:
-        note_data_list = sine(note_freq, sample_rate, note_time, decay=1, isNpArray=False)
+        note_data_list = sine(note_freq, sample_rate, note_time, decay=decay, isNpArray=False)
         total_list = np.concatenate([total_list, note_data_list])
 
     print(total_list)
@@ -102,6 +102,6 @@ if __name__ == "__main__":
     # print(frequencies)
     # wave_data = make_waves([261.6, 293.7, 329.6, 349.2, 392, 349.2, 329.6, 293.7, 261.6], 44100, 0.25, decay=1)
     # wave_data = make_waves(frequencies, 44100, 0.025, decay=0.025)
-    wave_data = make_waves([440, 220, 110], SAMPLE_RATE, 0.1, show_graph=False)
+    wave_data = make_waves([27.5, 16.35, 21.83, 25.96], SAMPLE_RATE, 0.25, show_graph=True)
     # wavio.write("bug.wav", wave_data, 44100, sampwidth=3)
     write_file("test.wav", wave_data, SAMPLE_RATE, sample_width=3)
