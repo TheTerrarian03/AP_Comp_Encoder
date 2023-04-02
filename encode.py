@@ -96,12 +96,15 @@ def make_waves(frequencies: list, sample_rate: int, note_time: float, decay: flo
 
 
 if __name__ == "__main__":
-    SAMPLE_RATE = 44100
+    SAMPLE_RATE = 441000
 
     # frequencies = [random.randrange(98, 650) for x in range(100)]
     # print(frequencies)
     # wave_data = make_waves([261.6, 293.7, 329.6, 349.2, 392, 349.2, 329.6, 293.7, 261.6], 44100, 0.25, decay=1)
     # wave_data = make_waves(frequencies, 44100, 0.025, decay=0.025)
-    wave_data = make_waves([27.5, 16.35, 21.83, 25.96], SAMPLE_RATE, 0.25, show_graph=True)
+    # freq_list = [30.87*2**a for a in range(1,9)]
+    freq_list = [3951, 7902]
+    print(freq_list)
+    wave_data = make_waves(freq_list, SAMPLE_RATE, 0.125, show_graph=True)
     # wavio.write("bug.wav", wave_data, 44100, sampwidth=3)
     write_file("test.wav", wave_data, SAMPLE_RATE, sample_width=3)

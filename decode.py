@@ -43,6 +43,11 @@ def closest_num(num, num_list):
     
     return closest
 
+abs_diff = lambda base, val : 0
+
+def abs_diff(base, val):
+    return 
+
 def parse_for_all(sound_data: np.array, sample_rate: float):
     TRACK = 0
 
@@ -53,6 +58,8 @@ def parse_for_all(sound_data: np.array, sample_rate: float):
     tracking_samples = False
 
     for i in range(1, len(sound_data)):
+        print(get_val(i))
+
         # if wave goes above 0, cycle completed or started
         if get_val(i-1) < 0 and get_val(i) >= 0:
             # if we're not alread y tracking, start tracking and set samples to 0 based on current value
@@ -139,7 +146,7 @@ def decode(sound_data: np.array, sample_rate: float):
     # get all frequencies
     # determine note length
     # parse for 
-    all_frequencies = parse_for_all_frequencies(sound_data, sample_rate)
+    all_frequencies = parse_for_all(sound_data, sample_rate)
     print(all_frequencies)
 
 
