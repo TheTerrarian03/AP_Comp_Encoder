@@ -7,8 +7,15 @@ import library
 
 
 def read_file_get_sampwidth(file_name: str):
-    file_data = wavio.read(file_name)
-    return file_data.sampwidth
+    """
+    Takes in a file name and returns the sample width of the file
+    
+        Parameters:
+            file_name (str): a string, holding the name for the file to be written (e.x. "example.wav")
+    """
+
+    # get data then return sample width value from data
+    return wavio.read(file_name).sampwidth
 
 def read_file_get_data(file_name: str):
     """
@@ -18,9 +25,8 @@ def read_file_get_data(file_name: str):
             file_name (str): a string, holding the name for the file to be written (e.x. "example.wav")
     """
 
-    file_data = wavio.read(file_name)
-    sound_data = file_data.data
-    return sound_data
+    # get file data then return sound data value
+    return wavio.read(file_name).data
 
 def read_file_get_rate(file_name: str):
     """
@@ -29,14 +35,15 @@ def read_file_get_rate(file_name: str):
         Parameters:
             file_name (str): a string, holding the name for the file to be written (e.x. "example.wav")
     """
-    file_data = wavio.read(file_name)
-    print(file_data.sampwidth)
-    return file_data.rate
+
+    # get file data then return rate of file
+    return wavio.read(file_name).rate
 
 def closest_num(num, num_list):
     """
     Given a number and a list of numbers, returns the number from the list
     that is closest to the given number.
+    (Written by ChatGPT)
     """
     closest = None
     diff = float('inf')  # Initialize with a very large number
@@ -49,105 +56,73 @@ def closest_num(num, num_list):
     return closest
 
 def get_most_common_num(num_list: list):
+    """
+    Small function for returning the most common number from a list
+    (stolen from the internet :D )
+    """
     return max(set(num_list), key=num_list.count)
 
-abs_diff = lambda base, val : 0
-
-def abs_diff(base, val):
-    return 
-
-def parse_for_all(sound_data: np.array, sample_rate: float):
-    TRACK = 0
-
-    get_val = lambda i : sound_data[i][TRACK]
+def parse_by_time(sound_data: np.array, sample_rate: int, note_time: float):
+    """
+    Takes in some sound and file data, then finds all frequencies in the 'song' at each note spot
     
-    frequencies = []
-    samples_per_period = 0
-    tracking_samples = False
+        Parameters:
+            sound_data (np.array): the numpy array that holds all of the wave data for the song
+            sample_rate (int): the number of samples per second the input file has
+            note_time (float): how long (in seconds) each note should be - CRUCIAL
+    """
 
-    for i in range(1, len(sound_data)):
-        # print(get_val(i))
-
-        # if wave goes above 0, cycle completed or started
-        if get_val(i-1) < 0 and get_val(i) >= 0:
-            # if we're not alread y tracking, start tracking and set samples to 0 based on current value
-            if (not tracking_samples):
-                tracking_samples = True
-                samples_per_period = 0
-
-            # tracking samples, calculate frequency and restart
-            else:
-                # calculate frequency
-                time_period = samples_per_period / sample_rate
-                frequency = 1 / time_period
-
-                closest_frequency = closest_num(frequency, library.all_frequencies)
-                # print(closest_frequency)
-                # add to list
-                if (len(frequencies) > 0):
-                    if (frequencies[-1] != closest_frequency):
-                        frequencies.append((closest_frequency))
-                else:
-                    frequencies.append(closest_frequency)
-                
-                # reset tracking
-                samples_per_period = 0
-                tracking_samples = False
-
-                # print("tracking samples, calculating")
-            
-        if (tracking_samples):
-            samples_per_period += 1
-
-    # print(samples_per_period, tracking_samples)
-    return frequencies
-
-def parse_by_time(sound_data: np.array, sample_rate: float, note_time: float):
+    # define some constants
     TRACK = 0
     MAX_CYCLE_DETECTS = 4
 
+    # a lambda for getting the value at a certain index, here to compensate for tracks in .wav files
     get_val = lambda i : sound_data[i][TRACK]
     
+    # define a list to hold all final frequencies to return
     frequencies = []
 
-    # get max samples given sample rate and note time
+    # get max sample and note amounts, given sample rate and note time
     MAX_CYCLE_SAMPLES = sample_rate * note_time
     MAX_NOTES = round((len(sound_data) / MAX_CYCLE_SAMPLES), 0)
-    # get list of starting positions for each note
+
+    # define and fill a list of starting positions for each note
     starting_indexes = []
     for i in range(int(MAX_NOTES)):
         new_index = float(i) * MAX_CYCLE_SAMPLES
         new_index = round(new_index, 0)
         new_index += 1
         starting_indexes.append(new_index)
-    print(f"max cycle samples: " + str(MAX_CYCLE_SAMPLES) + ", max notes: " + str(MAX_NOTES) + ", starting indexes: " + str(starting_indexes))
-    # for each starting index
+
+    # for each starting index, find go for a while and find some frequencies
     for start_index in starting_indexes:
-        # for range of starting to starting+max
-        current_freqs = []
-        samples_per_period = 0
-        tracking_samples = False
+        # define variables to hold important information
+        current_freqs = []  # current frequencies found
+        samples_per_period = 0  # how many samples per period/cycle so far
+        tracking_samples = False  # whether or not to track samples currently
+
+        # for indexes in range of the starting index -> starting index + (max - 3), look for frequencies
         for i in range(int(MAX_CYCLE_SAMPLES)-3):
+            # make a "sub index"- accounts for starting index
             sub_index = int(i + start_index)
-            # print("sub index", sub_index, "type", type(sub_index))
-            # print("start index:", start_index, ",i:", i, ", sub index:", sub_index)
-            # look for frequencies
-            # if wave goes above 0, cycle completed or started
+
+            # if wave goes above 0, cycle either completed or started
             if get_val(sub_index-1) < 0 and get_val(sub_index) >= 0:
-                # if we're not already tracking, start tracking and set samples to 0 based on current value
+                # if we're not already tracking, cycle started, start tracking and set samples to 0
                 if (not tracking_samples):
                     tracking_samples = True
                     samples_per_period = 0
 
-                # tracking samples, calculate frequency and restart
+                # we're tracking samples, cycle complete, calculate frequency and restart
                 else:
                     # calculate frequency
                     time_period = samples_per_period / sample_rate
                     frequency = 1 / time_period
 
+                    # get closest frequency
                     closest_frequency = closest_num(frequency, library.all_frequencies)
-                    # print(closest_frequency)
-                    # add to list
+
+                    # add to list if not already there
                     if (len(current_freqs) > 0):
                         if (current_freqs[-1] != closest_frequency):
                             current_freqs.append((closest_frequency))
@@ -158,51 +133,66 @@ def parse_by_time(sound_data: np.array, sample_rate: float, note_time: float):
                     samples_per_period = 0
                     tracking_samples = False
 
-                    # print("tracking samples, calculating")
-                
+            # increment samples if tracking                
             if (tracking_samples):
                 samples_per_period += 1
             
-            # when list len > max cycle detects
-                # quit / break
+            # when list len > max cycle detects, break
             if (len(current_freqs) > MAX_CYCLE_DETECTS):
                 break
-        # at end:
-            # calc freq and add to total list
-        print(current_freqs)
+
+        # at end, calc freq and add to total list
         frequencies.append(get_most_common_num(current_freqs))
-        # frequencies.append(closest_num(np.average(current_freqs), library.all_frequencies))
     
-    # return total list
+    # return final list
     return frequencies
 
-def get_note_length(sound_data: np.array, doRound: bool=True):
+def get_note_length(sound_data: np.array, sample_width: int, do_round: bool=True):
+    """
+    Takes in some sound data and returns the intended time for each note
+    
+        Parameters
+            sound_data (np.array): array of sound wave data
+            sample_width (int): sample width of input file
+            doRound (bool): whether or not to round to 3 decimal places
+    """
+
+    # define which track to look at
     TRACK = 0
+    SAMP_WIDTHS = [8, 16, 24, 32]
+    
+    # get last point
     last_point = sound_data[-1][TRACK]
-    samp_widths = [8, 16, 24, 32]
-    width_to_1_mult = 2/(2**samp_widths[read_file_get_sampwidth("test.wav")-1])
+    
+    # calculate scale from x-bit integer down to float
+    width_to_1_mult = 2/(2**SAMP_WIDTHS[sample_width-1])
+
+    # scale point
     scaled_point = last_point * width_to_1_mult
-    if (doRound):
+
+    # round if necessary
+    if (do_round):
         scaled_point = round(scaled_point, 3)
+    
+    # return value
     return scaled_point
 
-def decode(sound_data: np.array, sample_rate: float):
-    # get all frequencies
-    # determine note length
-    # parse for 
-    # all_frequencies = parse_for_all(sound_data, sample_rate)
-    # print(all_frequencies)
-    note_length = get_note_length(sound_data)
-    frequencies = parse_by_time(sound_data, sample_rate, note_length)
-    print(frequencies)
+def decode(file_name: str):
+    """
+    DECODER! Takes in file name and does it all from here. Returns a list of frequencies
+    
+        Parameters
+            file_name (str): Name of file to decode
+    """
+
+    sound_data = read_file_get_data(file_name)
+    sample_rate = read_file_get_rate(file_name)
+    sample_width = read_file_get_sampwidth(file_name)
+    note_length = get_note_length(sound_data, sample_width, do_round=True)
+
+    parsed_frequencies = parse_by_time(sound_data, sample_rate, note_length)
+    print(parsed_frequencies)
 
 
 if __name__ == "__main__":
-    sound_data = read_file_get_data("test.wav")
-    sample_rate = read_file_get_rate("test.wav")
-    note_length = get_note_length(sound_data)
-    
-    decode(sound_data, sample_rate)
-    # sampwidths = [8, 16, 24, 32]
-    # print(read_file_get_sampwidth("test.wav"), sampwidths[read_file_get_sampwidth("test.wav")-1], (2**sampwidths[read_file_get_sampwidth("test.wav")-1])/2)
-    # determine_note_length(sound_data, sample_rate)
+    decode("test.wav")
