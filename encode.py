@@ -3,6 +3,7 @@ import wavio
 from matplotlib import pyplot as plt 
 import math
 import random
+import library
 
 
 def write_file(file_name: str, data_array: np.array, sample_rate: int=44100, sample_width: int=2):
@@ -82,13 +83,14 @@ def make_waves(frequencies: list, sample_rate: int, note_time: float, decay: flo
         note_data_list = sine(note_freq, sample_rate, note_time, decay=decay, isNpArray=False)
         total_list = np.concatenate([total_list, note_data_list])
 
-    print(total_list)
     scaled_array = scale_to_1(total_list)
+    scaled_array = np.append(scaled_array, np.array([note_time]))
+    print(f"scaled: " + str(scaled_array) + ", last point: " + str(scaled_array[-1]))
 
     if(show_graph):
         plt.title("Sound - graphed!")
         plt.xlabel("x axis - time") 
-        plt.ylabel("y axis - amplitude") 
+        plt.ylabel("y axis - amplitude")
         plt.plot(scaled_array)
         plt.show()
 
@@ -96,15 +98,17 @@ def make_waves(frequencies: list, sample_rate: int, note_time: float, decay: flo
 
 
 if __name__ == "__main__":
-    SAMPLE_RATE = 441000
+    SAMPLE_RATE = 100000
 
     # frequencies = [random.randrange(98, 650) for x in range(100)]
     # print(frequencies)
     # wave_data = make_waves([261.6, 293.7, 329.6, 349.2, 392, 349.2, 329.6, 293.7, 261.6], 44100, 0.25, decay=1)
     # wave_data = make_waves(frequencies, 44100, 0.025, decay=0.025)
     # freq_list = [30.87*2**a for a in range(1,9)]
-    freq_list = [3951, 7902]
-    print(freq_list)
-    wave_data = make_waves(freq_list, SAMPLE_RATE, 0.125, show_graph=True)
+    freq_list = library.all_frequencies
+    # freq_list = [6645]
+    print("aaaaaa", freq_list)
+    # print(freq_list)
+    wave_data = make_waves(freq_list, SAMPLE_RATE, 0.2, show_graph=False)
     # wavio.write("bug.wav", wave_data, 44100, sampwidth=3)
-    write_file("test.wav", wave_data, SAMPLE_RATE, sample_width=3)
+    write_file("test.wav", wave_data, SAMPLE_RATE, sample_width=2)
