@@ -1,6 +1,6 @@
 import library, tkinter as tk
 
-def binary_conversion(message):
+def message_to_binary(message):
     ascii_values = [] # List for ascii values
     binary_values = [] # List for final binary message
 
@@ -37,25 +37,3 @@ def sync_message(message):
 
     print('all notes', all_notes)
     return print(frequencies)
-
-# Function for button press
-def button_ui():
-    print(sync_message(binary_conversion(msg.get())))
-    return sync_message(binary_conversion(msg.get()))
-
-# Creates UI for inputing a message
-msg_window = tk.Tk() # Creates a window
-msg_window.wm_geometry('500x500')
-msg_window.title('Message Encoder') 
-msg_window.configure(background= '#B2D2A4')
-
-# Text box for user input
-msg = tk.StringVar()
-msg_box = tk.Entry(msg_window, textvariable=msg)
-msg_box.grid(column=6, row=8, sticky='news')
-
-# Enter button
-enter = tk.Button(msg_window, text='Enter Message', command= button_ui)
-enter.grid(column=6, row=7, sticky='news')
-
-msg_window.mainloop()
