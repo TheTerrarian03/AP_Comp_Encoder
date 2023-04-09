@@ -40,6 +40,7 @@ def sync_message(message):
 
 # Function for button press
 def button_ui():
+    print(sync_message(binary_conversion(msg.get())))
     return sync_message(binary_conversion(msg.get()))
 
 # Creates UI for inputing a message
