@@ -1,4 +1,4 @@
-import library, tkinter as tk
+import library
 
 def message_to_binary(message):
     ascii_values = [] # List for ascii values
@@ -17,23 +17,19 @@ def message_to_binary(message):
 
 # Syncs binary to sound
 def sync_message(message):
- 
-
     all_notes = [] # Each individual letters notes to sort through
     binary_inds = [] # Indexes of the letters in notes_and_letters
 
     frequencies = [] # Frequencies that are equivalent to message
 
-    # Finds index of the binary for the note
-    for b_notes in library.notes_and_letters: # Checks each individual list for a note
-        for values in library.notes_and_letters[b_notes]:
-            if values in message: # Checks if the value matches in the message
-                all_notes.append(b_notes)
-                binary_inds.append(library.notes_and_letters[b_notes].index(values)) # Finds index of value and adds to list
-    
+    for val in message: # val is each individual binary that makes up the message
+        for notes in library.notes_and_letters: # Checks each note and then each binary inside note
+            for values in library.notes_and_letters[notes]:
+                if val == values: # Matches values
+                    all_notes.append(notes)
+                    binary_inds.append(library.notes_and_letters[notes].index(values)) # Finds the index of values and matches a frequency
+
     for name, index in zip(all_notes, binary_inds): # Creates tuples from the lists named
         frequencies.append(library.frequencies[name][index]) # Matches the list name with the needed index and stores it!
 
-
-    print('all notes', all_notes)
     return print(frequencies)
