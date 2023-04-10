@@ -45,10 +45,8 @@ def encoding_button():
 # Function for dropdown menu on start page
 def options_changed(event):
     if options.get() == 'Encode':
-        print('encode')
         return(encoding_page.tkraise())
     elif options.get() == 'Decode':
-        print('decode')
         return(decoding_page.tkraise())
 
 # - Start Page -
