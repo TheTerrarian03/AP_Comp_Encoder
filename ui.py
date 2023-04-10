@@ -1,6 +1,7 @@
 import tkinter as tk, binary_conversion, decode
 from tkinter import ttk
 from tkinter import filedialog
+from tkinter import messagebox
 
 root = tk.Tk()
 root.wm_geometry('500x200')
@@ -18,14 +19,23 @@ encoding_page.grid(column= 0, row=0, sticky='news')
 
 
 def file_decoding():
-    return(decode.decode(file_name))
+    # get text property of file_name label
+    filename = file_name.cget("text")
+    # get frequencies
+    frequencies = decode.decode(filename)
+
+    # convert to letters
+
+    # show popup box
+    messagebox.showinfo("Decoded Message!", "Your message is:\n\n" + "aaaaa")
 
 def back_buttons(): # Sends user back to start page
     return(start_page.tkraise())
 
 # Allows user to select file
 def browse_files():
-    filename = filedialog.askopenfilename(initialdir='/',title ='Select a file',filetypes=(('Wave Files','*.wav*'),('All Files', '*.*'))) # Should open file explorer
+    filename = filedialog.askopenfilename(initialdir='/',title ='Select a file',filetypes=(('Wave Files','*.wav'),('All Files', '*.*'))) # Should open file explorer
+    # initialdir could also be '~' to open current directory
     file_name.configure(text = filename) # Changes label so user can see the file they selected
 
 # Function for enter button on encoding page
