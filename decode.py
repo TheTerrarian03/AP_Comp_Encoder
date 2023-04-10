@@ -191,8 +191,7 @@ def decode(file_name: str):
     note_length = get_note_length(sound_data, sample_width, do_round=True)
 
     parsed_frequencies = parse_by_time(sound_data, sample_rate, note_length)
-    print(parsed_frequencies)
-
+    return parsed_frequencies
 
 if __name__ == "__main__":
     decode("test.wav")

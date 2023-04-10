@@ -1,4 +1,4 @@
-import tkinter as tk, binary_conversion, decode
+import tkinter as tk, binary_conversion, decode, encode
 from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
@@ -18,16 +18,19 @@ encoding_page = tk.Frame(root)
 encoding_page.grid(column= 0, row=0, sticky='news')
 
 
+# Function for enter button on decoding page
 def file_decoding():
     # get text property of file_name label
     filename = file_name.cget("text")
     # get frequencies
     frequencies = decode.decode(filename)
-
+    print(f"Frequencies: {frequencies}")
     # convert to letters
-
+    decoded_message = binary_conversion.frequency_undo(frequencies)
     # show popup box
-    messagebox.showinfo("Decoded Message!", "Your message is:\n\n" + "aaaaa")
+    messagebox.showinfo("Decoded Message!", "Your message is:\n\n" + decoded_message)
+    # return decoded message incase it needs to be used somewhere else
+    return decoded_message
 
 def back_buttons(): # Sends user back to start page
     return(start_page.tkraise())
@@ -40,7 +43,19 @@ def browse_files():
 
 # Function for enter button on encoding page
 def encoding_button():
-    return(binary_conversion.sync_message(binary_conversion.message_to_binary(msg.get())))
+    # get message, convert to binary, then convert to frequencies to write to file
+    frequencies = binary_conversion.sync_message(binary_conversion.message_to_binary(msg.get()))
+    # define some easy-to-change-in-code constants for writing sound file
+    SAMPLE_RATE = 88200
+    SAMPLE_WIDTH = 2
+    NOTE_TIME = 0.2
+    FILE_NAME = "encoded_message.wav"
+    # make wave data
+    wave_data = encode.make_waves(frequencies, SAMPLE_RATE, NOTE_TIME)
+    # write sound file out
+    encode.write_file(FILE_NAME, wave_data, SAMPLE_RATE, SAMPLE_WIDTH)
+    # tell user file has been written
+    messagebox.showinfo("File written!", f"Your message has now been encrypted and written out to the file: \"{FILE_NAME}\"")
 
 # Function for dropdown menu on start page
 def options_changed(event):

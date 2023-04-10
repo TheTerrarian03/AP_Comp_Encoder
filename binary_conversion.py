@@ -62,4 +62,5 @@ def frequency_undo(frequency):
     # Changes the message from list to a string
     msg = ''.join([str(elem) for elem in decoded_msg])
 
-    return print(msg)
+    print(msg)
+    return msg
