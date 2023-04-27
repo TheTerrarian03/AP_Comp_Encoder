@@ -1,4 +1,4 @@
-import library, binascii
+import library
 
 def message_to_binary(message):
     ascii_values = [] # List for ascii values
